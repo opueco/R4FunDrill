@@ -12,3 +12,6 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/opueco/R4FunDrill
 BugReports: https://github.com/opueco/R4FunDrill/issues
+Imports: 
+    learnr
+RoxygenNote: 6.1.1
