@@ -294,14 +294,14 @@ Y
 
 ```{r dataframe3, exercise=TRUE, exercise.lines=14}
 # こういうふうにかくこともできる
-X <- data.frame(身長 = c(168.5, 172.8, 159.0), 
-                体重 = c(69.5, 75.0, 56.5))
+X <- data.frame(height = c(168.5, 172.8, 159.0), 
+                weight = c(69.5, 75.0, 56.5))
 
 # 列の取り出し
-X$身長
+X$height
 
 # 列の追加
-X$BMI <- X$体重 / ((X$身長 / 100)^2 )
+X$BMI <- X$weight / ((X$height / 100)^2 )
 
 # X を表示する
 
@@ -318,8 +318,8 @@ X$BMI <- X$体重 / ((X$身長 / 100)^2 )
 
 
 ```{r dataframe4, exercise=TRUE, exercise.lines=10}
-X <- data.frame(身長 = c(168.5, 172.8, 159.0), 
-                体重 = c(69.5, 75.0, 56.5))
+X <- data.frame(height = c(168.5, 172.8, 159.0), 
+                weight = c(69.5, 75.0, 56.5))
 
 X[2, ]
 X[4, ] <- c(200.0, 90.0)
