@@ -1,0 +1,436 @@
+---
+title: "Day02 ドリル"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## 1. 尺度水準 {#sec1}
+
+奥村 (2016) §2.1 を参考にしています。
+
+### 1.1. データの分類
+
+データには次の分類があります。
+
+- カテゴリカル変数（質的変数）
+  - 名義尺度: 順序関係がない
+  - 順序尺度: 順序関係はあるが間隔は定義されない
+- 量的変数
+  - 間隔尺度: 数値の差（間隔）に意味はあるが原点は恣意的に選ばれている
+  - 比例尺度: 数値の差と比の両方に意味がある
+
+```{r data-classify-quiz-1, echo=FALSE}
+quiz(caption = "問題: 統計検定4級, 2018年11月",
+  #
+  # 1st Question
+  #
+  question("体力測定の際に生徒から収集したデータのうち，質的データはどれか。次の５つの中から最も適切なものを一つ選べ。",
+    answer("50m 走のタイム"),
+    answer("反復横跳びの回数"),
+    answer("走り幅跳びの距離"),
+    answer("最初に行った種目名", correct = TRUE),
+    answer("垂直跳びの高さ"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE),
+  #
+  # 2nd Question
+  #
+  question("定期試験の際に生徒から収集したデータのうち，量的データはどれか。次の5つのうちから最も適切なものを一つ選べ。",
+    answer("氏名"),
+    answer("出席番号"),
+    answer("試験前日の勉強時間", correct = TRUE),
+    answer("クラス名"),
+    answer("ある試験問題における解答選択肢の番号"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE)
+)
+```
+
+
+```{r data-classify-quiz-2, echo=FALSE}
+quiz(caption = "問題: 尺度の分類",
+  #
+  # 1st Question
+  #
+  question("「降水量 80mm」はどのような尺度のデータか？",
+    answer("名義尺度"),
+    answer("順序尺度"),
+    answer("間隔尺度"),
+    answer("比例尺度", correct = TRUE),
+    allow_retry = TRUE),
+  #
+  # 2nd Question
+  #
+  question("「Amazon の星4つ」はどのような尺度のデータか？",
+    answer("名義尺度"),
+    answer("順序尺度", correct = TRUE),
+    answer("間隔尺度"),
+    answer("比例尺度"),
+    allow_retry = TRUE)
+)
+```
+
+### 1.2. グラフ
+
+#### 問題1
+
+次の図を見て問題に答えなさい。
+
+```{r graph-name-1, echo=FALSE}
+x <- rnorm(100)
+y <- - x + 40 + 0.8 * rnorm(100)
+plot(x, y)
+
+quiz(caption = "問題: グラフの名前 1",
+  question("上のグラフは ... ",
+    answer("散布図 (scatter plot)", correct = TRUE),
+    answer("ヒストグラム (histogram)"),
+    answer("箱ひげ図 (box and whisker plot)"),
+    answer("棒グラフ (bar chart)"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  ),
+  question("上のグラフを生成するコードは ... ",
+    answer("plot(x, y)", correct = TRUE),
+    answer("hist(x, y)", message = "→ hist(x) はヒストグラムを作成"),
+    answer("boxplot(x, y)", message = "→ boxplot() は箱ひげ図を作成"),
+    answer("barplot(x, y)", message = "→ barplot() は棒グラフを作成"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+#### 問題2
+
+```{r graph-name-2, echo=FALSE}
+x <- rnorm(100)
+y <- - x + 0.8 * rnorm(100)
+boxplot(x, y)
+
+quiz(caption = "問題: グラフの名前 2",
+  question("上のグラフは ... ",
+    answer("散布図 (scatter plot)"),
+    answer("ヒストグラム (histogram)"),
+    answer("箱ひげ図 (box and whisker plot)", correct = TRUE),
+    answer("棒グラフ (bar chart)"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  ),
+  question("上のグラフを生成するコードは ... ",
+    answer("plot(x, y)", message = "→ plot() は主に散布図と折れ線グラフ"),
+    answer("hist(x, y)", message = "→ hist(x) はヒストグラムを作成"),
+    answer("boxplot(x, y)", correct = TRUE),
+    answer("barplot(x, y)", message = "→ barplot() は棒グラフを作成"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+## 2. 中心 {#sec2}
+
+### 2.1 中心傾向の代表的な指標
+
+
+$n$個の数値が与えられていて，$i=1,\dots,n$ のラベルが付されている。
+
+$$
+x = \{ x_1, x_2, \dots, x_n\}
+$$
+
+**平均値** $\bar{x}$ は次の式で定義される数値である。
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i
+$$
+
+データの順序を小さい順に並び替えたものを
+
+$$
+x_{[1]}, x_{[2]}, \dots, x_{[n]}
+$$
+とする。ラベルにカッコを付けて $[i]$ となっていることに注意。$x_{[i]}$ は データのうち $i$番目に小さい数である。
+
+**中央値** $\mathrm{Median}(x)$ を次のように定義する。
+
+$$
+\mathrm{Median}(x)
+=
+\begin{cases}
+  x_{[(n+1) / 2]} &\quad \text{if } n \text{ が奇数} \\
+  \frac{1}{2}\left(x_{[n/2]} + x_{[n/2 + 1]}\right)
+    &\quad \text{if } n \text{ が偶数}
+\end{cases}
+$$
+
+例えば $n=11$ のときは，$\mathrm{Median}(x) = x_{[6]}$, $n=10$ 
+のときは $\mathrm{Median}(x) = (x_{[5]} + x_{[6]}) / 2$ である。
+小さい順に並べてちょうど真ん中にある数字である。
+
+```{r mean-median, echo=FALSE}
+quiz(caption = "問題: 平均値と中央値",
+  question("平均値と中央値について正しい記述を選びなさい。",
+    answer("データの個数が奇数のとき，中央値はデータに含まれる。", correct = TRUE),
+    answer("中央値と比べて，平均値は外れ値の影響を受けにくい。"),
+    answer("データが所得である場合には常に中央値を使うべきである。"),
+    answer("データが左右対称な分布の場合には中央値は常に平均値より大きい。"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+平均値や中央値など，データの典型的な値を表現するための統計量を中心傾向とか代表値という。
+
+#### 問題: 平均値と中央値の計算
+
+次のデータ `x` の平均値と中央値を求めなさい。
+
+```{r mean-exercise, exercise = TRUE, exercise.lines = 7}
+x <- c(3, 10, 3, 3, 10, 4, 2, 6, 7, 1, 2, 5, 4, 9, 3)
+
+
+```
+
+### 2.2 欠測値
+
+何らかの理由でデータの計測ができないということが起こると，「欠測値」（missing data) が生じる。R では欠測値を `NA` で表現する。
+
+さきほどのデータで最後の数字を `NA` に置き換えたものである。残念ながら単純に `mean()` 使っては平均値を計算することはできない。
+
+```{r mean-exercise2, exercise = TRUE, exercise.lines = 4, exercise.eval = TRUE}
+x <- c(3, 10, 3, 3, 10, 4, 2, 6, 7, 1, 2, 5, 4, 9, NA)
+mean(x)
+
+```
+
+欠測値がランダムに起こっているのであれば，単純に取り除いてもよいかもしれない。しかし，「預金残高が高い人が預金残高をレポートしない」（例えば犯罪被害にあうことを嫌って）などの明確な傾向があるなら，単純に欠測値を取り除くとバイアスが生じる。取り除くにしても意識的に行うべきだろう。
+
+
+#### 問題: 平均値と中央値の計算（欠測値がある場合）
+
+`mean`, `median` にパラメータを1つ追加（変更）して，欠測値をすべて取り除いたデータの平均値と中央値を計算してください。（注意：データを改変する必要はありません）
+
+```{r mean-exercise3, exercise = TRUE}
+x <- c(1, 1, NA, 8, 2, 7, 9, NA, 1, NA, 3, 3, 10, 9, 1)
+mean(x)
+median(x)
+```
+
+```{r mean-exercise3-hint}
+na.rm = TRUE
+```
+
+### 2.3 ロバストな代表値
+
+データの中心（central tendency）を表す指標として，平均と中央値について学んだ。平均はもっとも標準的な指標だが，外れ値が多い場合にはデータのメイン部分の特徴を正確に捉えられないケースがある。
+
+次の例を見てみよう。数字は『p値とは何か』（ヴィッカーズ著，竹内監訳）から取っている。舞台はマイクロソフト社の従業員が出入りする食堂である。食堂経営者は客層の所得を把握して，ランチセットの価格帯を決めたいと考えている。調査のために「ランダム」に8人の所得データを取得した。7人の（仮想的な）従業員の年収（単位は万円）と，最高額のデータはもちろんビル・ゲイツの年収である。
+
+```{r mean-income, echo = TRUE}
+income <- c(300, 300, 350, 400, 450, 500, 850, 100000)
+
+mean(income)
+```
+
+平均所得が1億円を超えているからランチのコースを 5000円に設定してもよいだろうか？
+
+もちろんそんなはずはない。サンプルの大部分は1000万円未満なのに，平均値はビル・ゲイツの年収に引き上げられてしまった。平均値は外れ値に弱いのだ。「外れ値の影響を受けにくい」という性質を「ロバスト」ということがある。中央値は代表的なロバスト統計量である。
+
+
+他にも刈り込み平均，ウィンザライズド平均，加重平均などがある。
+
+- 刈り込み平均: 大きいデータと小さいデータを落とす。`mean(x, trim = p)` で，両端を p% ずつ落とした平均を計算できる。
+- ウィンザライズド平均: 大きいデータと小さいデータを落として，残った両端の値でもとと同じ長さのデータを作り，平均する。
+
+
+```{r mean-income2, exercise = TRUE}
+income <- c(300, 300, 350, 400, 450, 500, 850, 100000)
+
+mean(income, trim = 0.1)
+
+library(psych)
+winsor.mean(x, trim = 0.1)
+```
+
+
+## 3. ばらつきの指標
+
+### 3.1. 平均と分散
+
+$n$個の数値データ
+
+$$x = \{ x_1, x_2, \dots, x_n \}$$
+
+が手元にある。代表的な中心傾向を表す指標はデータの平均 (mean) であり，次の式で計算した。
+
+$$
+\bar x
+=
+\frac{1}{n} \sum_{i=1}^n x_i
+$$
+
+R では `mean()` を使う。
+
+大きい数字 $a$ と小さい数字 $b$ があったら，足して2で割って真ん中 $(a + b) /2$ を求めるのと同じである。$\{900, 1100\}$ の平均も $\{ 0, 2000 \}$ の平均も1000である。この2つのデータが「夫婦の年収だ」と言われたとき，2つの夫婦が「まったく同じ暮らし向きだ」と思う人はないだろう。
+
+データは中心の周りに沢山集まっている場合もあれば，中心から離れたところにたくさん散らばっている場合もある。平均に限らず，「各数値が中心傾向からどれだけ離れているか？」を散らばりとかスケール（尺度）という。
+
+中心傾向として平均を使った場合のスケール指標は分散 $s^2$ （標本分散，不偏分散），または標準偏差 $s$ （標本標準偏差）である。次の式で計算する。
+
+$$
+s^2
+=
+\frac{1}{n-1} \sum_{i=1}^n (x_i - \bar x)^2,
+\quad
+s = \sqrt{s^2}
+$$
+
+平均からの距離の2乗 $(x_i - \bar x)^2$ を「平均」したものが標本分散である。ただし，$n$ で割るよりも $n-1$ で割るほうが都合が良いことが多いので，$n-1$ で割っている。R では $s^2$ は `var()`，$s$ は `sd()` で計算できる。
+
+下図は平均と標準偏差のイメージである。平均±標準偏差の周りに多くのデータが集中している。
+
+```{r, deviation-1}
+x <- rchisq(1000, 5)
+mu <- mean(x)
+s <- sd(x)
+hist(x, col = "gray90")
+
+arrows(mu, 250, mu, 0, col = "red", length = 0.1)
+text(mu, 250, expression(bar(italic(x))), pos = 4, col = "red")
+
+arrows(mu, 50, mu + s, 50, col = "blue", length = 0.1, code = 3)
+text(mu + s / 2, 50, expression(italic(s)), pos = 3, col = "blue")
+
+arrows(mu, 50, mu - s, 50, col = "blue", length = 0.1, code = 3)
+text(mu - s / 2, 50, expression(italic(s)), pos = 3, col = "blue")
+```
+
+
+#### 問題
+
+正規分布に従う乱数を生成して，平均と分散，標準偏差を求めてみよう。「Run Code」のたびに違う数値が現れることに注意しよう。標本平均や標本分散がいつも似たような数字を出力するのはなぜか？
+
+```{r mean-var, exercise = TRUE}
+x <- rnorm(1000, mean = 10, sd = 3)
+mean(x)
+var(x)
+sd(x)
+```
+
+
+#### 問題 (数学)
+
+期待値 $\mu$, 分散 $\sigma^2$ の同一分布に従う独立な確率変数 $X_1, \dots, X_n$ がある（データ $x$ の背後にある確率変数）。確率変数 $X$ について，期待値 $\mathbb{E}[X]$, 分散 $\mathrm{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]$ という記号を使う。
+
+1. 標本平均
+   $$
+   \bar{X} = \frac{1}{n} \sum_{i=1}^n X_i
+   $$
+   は確率変数である。$\bar X$ の期待値について $\mathbb{E}[\bar X] = \mu$ が成り立つことを示せ。
+2. 標本分散
+   $$
+   S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar X)^2
+   $$
+   もまた確率変数である。$S^2$ の期待値について $\mathbb{E}[S^2] = \sigma^2$ が成り立つことを示せ。
+3. $\bar{X}$ の分散 $\mathrm{Var}(\bar X)$ が
+    $$
+      \mathrm{Var}(\bar X) = \frac{\sigma^2}{n}
+    $$
+    を成り立たせることを示せ。
+
+
+#### 問題
+
+次のコードを読んで結果を解釈してくだささい。
+
+```{r mean-var2, exercise = TRUE}
+n = 1000
+mu = 10
+sigma = 3
+
+xbar <- replicate(100, mean(rnorm(n, mean = mu, sd = sigma)))
+var(xbar)
+```
+
+
+### 3.2. 四分位範囲
+
+データを小さい順に並べたときに得られる値について，次の3つは説明は不要だろう。
+
+- 最小値 `min(x)`
+- 中央値 `median(x)`
+- 最大値 `max(x)`
+
+`x` の定義を変えていろいろ試してみよう。
+
+```{r orderstat, exercise = TRUE}
+x <- 1:100
+min(x)
+median(x)
+max(x)
+```
+
+最大値と最小値の差を「範囲」「レンジ」という。
+
+```{r orderstat２, exercise = TRUE}
+x <- 1:100
+range(x)
+max(x) - min(x)
+```
+
+**分位点**
+
+下位（あるいは上位）から順番に数えていって，ある数字がデータ全体の何%の位置にあるかに関心があることがある。逆に下からA% の位置にあるデータがわかれば，それ以下の値を取るデータが全体のA% であることがわかる。
+
+例えば，中央値というのはちょうど 50% の位置にあるデータのことである。所得上位1%以上の人 が経済の総所得のどれほどを獲得しているかは，マクロ経済の関心事である。
+
+$100\alpha$% 点 を$q_\alpha$ と書く。$x_i \le q_\alpha$ となる $x_i$ の数は全体のおよそ $\alpha\times100$% である。R では `quantile()` によって計算できる。
+
+```{r orderstat3, exercise = TRUE}
+x <- 1:100
+quantile(x, c(0.1, 0.9))
+```
+
+
+75%点と25%点の差を **四分位範囲** という。R では `IQR(x)` で計算できる。
+
+```{r orderstat4, exercise = TRUE}
+x <- 1:100
+quantile(x, 0.75) - quantile(x, 0.25)
+IQR(x)
+```
+
+標準正規分布の場合は `IQR(x) / 1.349` を使うと，標準偏差のよい推定量となる。
+
+
+```{r orderstat5, exercise = TRUE}
+x <- rnorm(1000)
+IQR(x) / 1.349
+```
+
+#### 問題
+
+```{r, exercise=TRUE, orderstat6-prepare, echo=TRUE, exercise.eval=TRUE}
+x <- rt(100, df = 3)
+head(x)
+tail(x)
+```
+
+`fivenum(x)` で一覧できる五数要約（min, 25%点, 中央値, 75%点, max）と箱ひげ図を見比べて，箱ひげ図の作り方について検討しなさい。
+
+```{r, orderstat6, exercise = TRUE, exercise.setup="orderstat6-prepare"}
+fivenum(x)
+boxplot(x)
+```
+
+
