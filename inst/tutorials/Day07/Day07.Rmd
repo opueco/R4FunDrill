@@ -1,0 +1,181 @@
+---
+title: "Day07 ドリル"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. 行列 {#matrix}
+
+Rで行列を作るには
+
+1. `c()` などを使ってベクトルを作る
+2. `matrix()` で行数（`nrow`） or 列数（`ncol`）を指定する。
+
+```{r matrix0, exercise=TRUE}
+matrix(1:6, ncol = 2)
+```
+
+何も指定しなければ，行列の要素を縦方向に埋めていくことに注意する。
+横方向に埋めたい場合は `byrow = TRUE` をつける。
+
+```{r matrix1, exercise=TRUE}
+matrix(1:6, ncol = 2, byrow = TRUE)
+```
+
+
+### 問題
+
+以下のすべてのオプションの組み合わせを試してください。
+
+- `matrix(x, ncol = __)`
+- `matrix(x, nrow = __)`
+- `matrix(x, ncol = __, byrow = TRUE)`
+- `matrix(x, nrow = __, byrow = TRUE)`
+
+```{r matrix2, exercise=TRUE}
+x <- 1:(3*4) / 10
+matrix(x, ncol = 3)
+```
+
+### 問題
+
+次の行列を定義するためのRコードはどれか。
+
+$$
+\begin{bmatrix}
+  1 & 4 & 7\\
+  2 & 5 & 8
+\end{bmatrix}
+$$
+
+
+```{r matrix3}
+question("最も適切なものを1つ選択する。",
+     answer("matrix(1, 2, 4, 5, 7, 8, ncol = 3)"),
+     answer("matrix(1, 2, 4, 5, 7, 8, nrow = 2)"),
+     answer("matrix(c(1, 4, 7, 2, 5, 8), nrow = 2, byrow = TRUE)", correct = TRUE),
+     answer("matrix(c(1, 4, 7, 2, 5, 8), nrow = 2)")
+     )
+```
+
+
+## 2. 分割表の復習 {#review}
+
+「要因AとBは独立か？」を知りたいとき，次のような$2 \times 2$ の分割表がよく使われる。
+
+<div style="width: 300px;">
+|       |          $B_1$ |           $B_2$ | 計             |
+|-------|---------------:|----------------:|---------------:|
+| $A_1$ |       $n_{11}$ |        $n_{12}$ | $n_{1\bullet}$ |
+| $A_2$ |       $n_{21}$ |        $n_{22}$ | $n_{2\bullet}$ |
+| 計    |$n_{\bullet 1}$ | $n_{\bullet 2}$ | $N$            |
+</div>
+
+これを，確率で表現しておくと「独立」というイメージがわかりやすい。
+
+<div style="width: 300px;">
+|       |          $B_1$ |           $B_2$ | 計             |
+|-------|---------------:|----------------:|---------------:|
+| $A_1$ |       $p_{11}$ |        $p_{12}$ | $p_{1\bullet}$ |
+| $A_2$ |       $p_{21}$ |        $p_{22}$ | $p_{2\bullet}$ |
+| 計    |$p_{\bullet 1}$ | $p_{\bullet 2}$ | $p$            |
+</div>
+
+もし， AとBが独立であれば，すべての $i,j$ について
+$$
+p_{ij} = p_{i\bullet} \times p_{\bullet j}
+$$
+が成り立つはずである。
+
+そこで，
+
+$$
+X = \sum_{i,j} \frac{(p_{ij} - p_{i\bullet} \times p_{\bullet j})^2}{p_{i\bullet} \times p_{\bullet j}}
+$$
+
+が小さいこと（あるいは大きいこと）を確認しようという考え方になる。
+
+
+$$
+p_{ij} = \frac{n_{ij}}{N}, \quad
+p_{i\bullet} = \frac{n_{i\bullet}}{N},\quad
+p_{\bullet j}
+=  \frac{n_{\bullet j}}{N}
+$$
+に注意すれば，
+
+$$
+X = \sum_{i,j} \frac{\left(\frac{n_{ij}}{N} - 
+\frac{n_{i\bullet}}{N} \times \frac{n_{\bullet j}}{N}\right)^2}{\frac{n_{i\bullet}}{N} \times \frac{n_{\bullet j}}{N}}
+= \sum_{i,j}
+\frac{(n_{ij} - n_{i\bullet}n_{\bullet j}/N)^2}{n_{i\bullet} n_{\bullet j}/N} 
+$$
+と表現できる。独立性の仮定のもとで，$X$ は自由度1 のカイ2乗分布にしたがう。
+
+### 問題
+
+上で与えた定義にしたがって，次の分割表に対する $X$ を計算せよ。
+
+<div style="width: 300px;">
+|       | $B_1$ | $B_2$ |  計 |
+|-------|------:|------:|----:|
+| $A_1$ |    80 |    60 | 140 |
+| $A_2$ |    10 |    40 |  50 |
+| 計    |    90 |   100 | 190 |
+</div>
+
+
+```{r sandbox0, exercise = TRUE}
+
+```
+
+ヒント: $X \sim 20.4$ くらいになるはず。
+
+## 3. 独立性検定の練習 {#exercise}
+
+独立性の検定には `fisher.test()` や `chisq.test()` を使う。
+
+### 問題1
+
+以下の分割表について，`fisher.test()`, `chisq.test()` を実行せよ。A，Bは独立であるといえるか？
+
+<div style="width: 300px;">
+|       | $B_1$ | $B_2$ |  計 |
+|-------|------:|------:|----:|
+| $A_1$ |    80 |    60 | 140 |
+| $A_2$ |    10 |    40 |  50 |
+| 計    |    90 |   100 | 190 |
+</div>
+
+
+```{r sandbox1, exercise = TRUE}
+
+```
+
+### 問題2
+
+サイズが大きくなっても考え方は同じである。
+
+<https://bellcurve.jp/statistics/course/9496.html> 
+
+次の表を用いて，性別と血液型の関連性を検定しなさい。
+
+<div style="width: 300px;">
+
+|    |  A |  O |  B | AB |
+|----|---:|---:|---:|---:|
+| 男 | 55 | 22 | 16 | 7  |
+| 女 | 40 | 32 | 24 | 4  |
+</div>
+
+```{r sandbox2, exercise = TRUE}
+
+```
+
+
+
