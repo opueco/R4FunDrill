@@ -1,7 +1,7 @@
 Package: R4FunDrill
 Type: Package
 Title: Drill Collection for OPU R Club
-Version: 0.7.0
+Version: 0.8.0
 Author: Kenji Sato
 Maintainer: Kenji Sato <kenji@kenjisato.jp>
 Description: OPU R Club is a reading group for R books at Osaka Prefecture University.
