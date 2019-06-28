@@ -1,0 +1,104 @@
+---
+title: "Day09 ドリル"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. 相関  {#correlation}
+
+### 問題
+
+(1) 次のデータの $r$, $\rho$, $\tau$ を求めなさい。
+
+```
+x <- c(1, 2, 3, 4, 5, 6)
+y <- c(2, 2, 3, 5, 4, 6)
+```
+
+```{r sandbox1-1, exercise=TRUE}
+
+```
+
+(2) (1) のデータについて，相関の検定を実施せよ。
+
+```{r sandbox1-2, exercise=TRUE}
+
+```
+
+
+### 問題
+
+(1) 次のデータの $r$, $\rho$, $\tau$ を求めなさい。
+
+```
+x <- c(63, 72, 70, 68, 66, 69, 74, 70, 63, 72, 65, 71)
+y <- c(124, 184, 161, 164, 140, 154, 210, 164, 126, 172, 133, 150)
+```
+
+```{r sandbox1-3, exercise=TRUE}
+
+```
+
+
+(2) (1) のデータについて，相関の検定を実施せよ。
+
+```{r sandbox1-4, exercise=TRUE}
+
+```
+
+
+## 2. 相関は因果を意味しない  {#causation}
+
+相関関係は因果関係を意味しないということに注意をする。
+
+**wooldridge** パッケージの `crime2` データセットを使おう。
+
+```
+crimes: total number index crimes
+officers: number police officers
+```
+
+1. `crimes` と `officers` の相関係数を計算しなさい。
+1. 相関はゼロでないと言えるか？
+1. 「住民が多いから警察官も犯罪も多い」とも考えられる。住民1人あたりの変数を計算して，
+   相関係数の検定をやり直しなさい。
+
+```{r sandbox2-1, exercise=TRUE, exercise.lines=8}
+data(crime2, package = "wooldridge")
+crimes <- crime2$crimes
+officers <- crime2$officers
+
+```
+
+## 3. 因果関係も相関を意味しない  {#causation2}
+
+因果関係があったとしても，線形関係を測る標準的な相関関係はゼロに近い値になるかもしれない。
+
+```{r sandbox3-1, exercise=TRUE, exercise.lines=8}
+t <- seq(0, 2*pi, length.out = 100)
+x <- cos(t); y <- sin(t)
+plot(x, y, pch = 16)
+cor(x, y)
+```
+
+
+### 問題
+
+上の例のように，
+
+1. プロットには明確な関係があるが
+2. 相関係数がゼロに近くなる
+
+ようなデータを作ってください。
+
+```{r sandbox3-2, exercise=TRUE, exercise.lines=6}
+
+```
+
+
+
