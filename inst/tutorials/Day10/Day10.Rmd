@@ -1,0 +1,110 @@
+---
+title: "Day10 ドリル"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 単回帰と共分散  {#ols-and-cor}
+
+線形単回帰モデル
+
+$$
+y = \beta_0 + \beta_1 x + \varepsilon
+$$
+
+の回帰係数 $\beta_1$ の推計値 $\hat\beta_1$ と 標本相関係数 $\mathrm{Cor} (y, x)$，標本共分散 $\mathrm{Cov}(y, x)$ には次のような関係があります。
+
+$$
+\begin{aligned}
+\mathrm{Cor}(y, x) &=  \hat\beta_1 s_x / s_y \\ 
+\mathrm{Cov}(y, x) &= \hat\beta_1 s_x^2
+\end{aligned}
+$$
+
+これをシミュレーションで確かめてみましょう。
+
+
+```{r sim1, exercise=TRUE, exercise.lines=10}
+a <- rnorm(50); b <- rnorm(50); c <- rnorm(50)
+x <- a + b
+y <- a + c
+
+
+
+
+```
+
+```{r sim1-hint}
+beta1 <- coef(lm(y ~ x))[[2]]
+```
+
+## データの読み込み {#read-data}
+
+パッケージ **pkg** （実際のパッケージ名に置き換える） に付属しているデータ `dta`  を分析可能にするには，
+
+1. `library(package)`
+2. `data("dta", package = pkg)`
+
+のいずれかを使うとよい。後者は使いたいデータ名が1つ決まっている場合に便利。
+
+`data()` 関数はパッケージにどのようなデータが含まれているかを教えてくれる。**datasets** パッケージには R にデフォルトで付属しているデータが含まれる。
+
+```{r data1, exercise=TRUE}
+data(package = "datasets")
+```
+
+
+このドリルが開けているのであれば， **wooldridge** パッケージがインストール済みのはずなので，次のコードがうまくいくはずだ。 **wooldridge** パッケージのデータを一覧してみよう。（残念ながら説明が不足している）
+
+
+
+```{r data2, exercise=TRUE}
+
+```
+
+`library(wooldridge)` とはしないことを前提に話を進める。 
+admnrev の詳しい説明を見たいと思ったら，
+
+```{r data3, exercise=TRUE}
+?wooldridge::admnrev
+```
+
+とすればよい。
+
+```{r data4, exercise=TRUE}
+data("admnrev", package = "wooldridge")
+```
+
+とすれば，データを使えるようになる。
+
+
+
+## 単回帰分析の練習  {#simple-ols-1}
+
+**wooldridge** の `gpa1 データセットを用いて単回帰分析をしてみよう。
+
+- 被説明変数: `ACT` 
+- 説明変数: `hsGPA`
+
+とする。おおむね次のようなことを毎回実行する。
+
+0. データをロードする
+1. 各変数の意味を調べる
+2. 因果関係の方向を見極めて仮説を立てる（A↑⇒B↑）
+3. データの散布図をプロットする。 
+4. データに傾向性がなければ回帰せずにやめる。あれば次に進む。
+5. lm で回帰を実行する
+6. summary を係数の優位性， $R^2$ をチェックする
+7. 回帰係数を解釈する（Aが1増えたらBが〇〇増える）
+8. 散布図と回帰直線を同時にプロットして当てはまりを目視
+9. 残差をプロットする。明らかな傾向が残っていたらモデルを変えてやりなおす
+
+```{r ols1, exercise=TRUE, exercise.lines=10}
+
+```
+
