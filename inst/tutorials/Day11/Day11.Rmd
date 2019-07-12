@@ -1,0 +1,131 @@
+---
+title: "Day11 ドリル"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 回帰係数の解釈 {#ols-coef}
+
+$Y$ を被説明変数， $X$ を説明変数，$\beta$ が $X$ にかかる係数とすると，線形回帰モデルの係数は次の表ように解釈する。対数変換する場合と，対数変換しない場合で解釈が異なる。
+
+
+| 被説明変数 | 説明変数 | 回帰係数 $\beta$ の解釈                              |
+|:-----------|:---------|:-----------------------------------------------------|
+| $Y$        | $X$      | $X$ が1単位増えたとき $Y$ が $\beta$ 単位増える       |
+| $\log Y$   | $X$      | $X$ が1単位増えたとき $Y$ が $100\times\beta$ % 増える |
+| $Y$        | $\log X$ | $X$ が1% 増えたとき $Y$ が $\beta/100$ 単位増える    |
+| $\log Y$   | $\log X$ | $X$ が1% 増えたとき $Y$ が $\beta$ % 増える            |
+
+
+### 問題
+
+**wooldridge** パッケージの `wage1` データを使う。
+
+```{r, echo=TRUE}
+library(wooldridge)
+data("wage1")
+```
+
+```{r, echo=TRUE, eval=FALSE}
+?wage1
+```
+```
+A data.frame with 526 observations on 24 variables:
+   wage: average hourly earnings
+   educ: years of education
+   exper: years potential experience
+   tenure: years with current employer
+```
+
+次のコードで出力される係数を解釈してください。
+
+```{r, echo=TRUE}
+lm(log(wage) ~ educ + exper + tenure, data = wage1)
+```
+
+
+
+## 重回帰分析 {#robust-ols}
+
+ここでは不均一分散と整合的な統計量を計算する方法を学ぶ。ここでは次の 2つのパッケージを使う。
+
+```
+library(sandwich)
+library(lmtest)
+```
+
+2点をよく覚えておこう。
+
+- 最小2乗法で計算される係数の数字（これは $\hat \beta$ の平均）は変わらない
+- 検定統計量の計算の基礎になる標準誤差（あるいは $\hat \beta$ の分散）は変わる
+
+通常はロバストな検定を行う方がよい。ただし，データの数が多いことが前提になっているので，データの数が少ない場合には正確な結果が得られない可能性がある。
+
+ロバストな検定の方が p値が高くでることを確認しておこう。（つまり，有意性の判断がより保守的になる）
+
+```{r robust, message=FALSE, exercise=TRUE}
+library(wooldridge)
+library(sandwich)
+library(lmtest)
+
+data("wage1")
+m <- lm(log(wage) ~ educ + exper + tenure, data = wage1)
+
+# 古典的な仮定
+writeLines("Classical: coeftest(m)")
+coeftest(m)
+
+# ロバストな検定
+writeLines("Robust: coeftest(m, vcov. = vcovHC(m))")
+coeftest(m, vcov. = vcovHC(m))
+```
+
+
+### 問題
+
+**wooldridge** パッケージに含まれる `gpa1` データを用いる。
+
+$$
+\mathrm{colGPA} = \beta_0 + \beta_1 \mathrm{hsGPA} + \beta_2 \mathrm{ACT}
+$$
+
+というモデルを用いて, 大学の成績と高校の成績の関係を説明してください。
+
+念の為，不均一分散と整合的な標準誤差を用いた検定も実施しましょう。
+
+```{r robust2, message=FALSE, exercise=TRUE, exercise.lines=12}
+library(wooldridge)
+library(sandwich)
+library(lmtest)
+
+data("gpa1")
+r <- lm(colGPA ~ hsGPA + ACT, data = gpa1)
+summary(r)
+
+# 不均一分散と整合的な標準誤差を用いた検定を実施してください。
+
+
+```
+
+## 重み付き最小2乗法 {#wls}
+
+**wooldridge** パッケージの `saving` データを用いて，貯蓄と消費の関係を調べてください。
+ただし，次の分散不均一モデルを想定すること。
+
+$$
+\begin{aligned}
+  \mathrm{sav}_i = \beta_0 + \beta_1 \mathrm{inc}_i + u_i\\ 
+  V(u_i) = \mathrm{inc}_i \times \sigma^2
+\end{aligned}
+$$
+
+```{r wls, exercise=TRUE, exercise.lines=8}
+
+
+
+```

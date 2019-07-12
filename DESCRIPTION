@@ -13,7 +13,7 @@ LazyData: true
 URL: https://github.com/opueco/R4FunDrill
 BugReports: https://github.com/opueco/R4FunDrill/issues
 Imports: 
-    learnr,wooldridge
+    learnr,wooldridge,sandwich,lmtest
 RoxygenNote: 6.1.1
 Suggests: 
     psych
