@@ -111,7 +111,7 @@ $$
 logit <- "ここを書き換える"
 
 # 限界効果の計算
-f <- function(x) exp(x) / (1 + exp(x))
+invlogit <- function(x) exp(x) / (1 + exp(x))
 xbeta <- predict(logit, as.data.frame.list(colMeans(j1))) 
 ME <- "ここを書き換える"
 
