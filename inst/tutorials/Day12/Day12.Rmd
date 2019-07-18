@@ -1,0 +1,120 @@
+---
+title: "Day12 ドリル"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 2値判別 {#binary}
+
+### プロビット
+
+[鹿野 (2015)](https://sites.google.com/site/kanolabweb/home/textbook) 15章で使用されている 2011-12年シーズンの528選手のデータを用います。
+
+- `transfer`: 1 = シーズン後移籍, 0 = 残留
+- `attend`: 出場時間 / 3060
+- `goal`: ゴール / 34
+- `j2`: 1 = J2 に降格, 0 = J1残留
+
+```{r, echo=TRUE}
+data("j1", package = "R4FunDrill")
+j1
+```
+
+`transfer` を被説明変数にして，プロビットで判別分析（あるいは1になる確率の回帰）を実施しましょう。
+
+```{r j1-probit, exercise=TRUE}
+data("j1", package = "R4FunDrill")
+fml <- transfer ~ attend + goal + j2
+probit <- glm(fml, family = binomial(link = "probit"), data = j1)
+summary(probit)
+```
+
+`attend` に対する係数が -1.39344 となっています。これは何を意味しているでしょうか？
+
+プロビットの回帰モデルは
+
+$$
+\mathrm{Prob}(Y = 1) = \Phi(X\beta + e)
+$$
+
+ですから（$\Phi$ は標準正規分布の累積分布関数），係数 $\beta$ の解釈には注意が必要です。$X_i$ が1だけ増加したときに $Y=1$ になる確率がどれだけ増加するかを知りたいとしましょう。$X_i$ で偏微分すると
+
+$$
+\frac{\partial}{\partial X_i} \widehat{\mathrm{Prob}(Y = 1)} = \frac{\partial}{\partial X_i} \Phi(X\hat\beta)
+= \Phi'(X\hat\beta)\hat\beta_i
+$$
+
+となりますから，$X_i$ の微小な増加が確率に及ぼす影響は $\frac{\partial}{\partial X_i}$ です。これを限界効果（Marginal Effect, ME）と呼びます。
+
+限界効果は説明変数に応じて変化するので，説明変数の「平均的な」値に対して限界効果を示すのが1つの方法です。（すべての観測について限界効果を計算して，それを平均する方法もあります）
+
+$$
+\mathrm{ME} = \phi(\bar{X}\hat\beta) \hat \beta_i 
+$$
+
+ただし， $\phi(\bullet)$ は標準正規分布の密度関数。
+
+$\bar{X}$ の計算は `colMeans(j1)` でできます（transferの平均，すなわち $\bar Y$ も計算されます）。この点で， $\bar X \hat \beta$ を計算するには `predict()` を使います。
+
+```{r j1-probit-me, exercise=TRUE}
+data("j1", package = "R4FunDrill")
+fml <- transfer ~ attend + goal + j2
+probit <- glm(fml, family = binomial(link = "probit"), data = j1)
+
+xbar <- as.data.frame.list(colMeans(j1))
+xbeta <- predict(probit, xbar)
+ME <- "ここを書き換えてMEの計算を完成させてください"
+```
+
+
+結果は次のようになるはずです。
+
+```{r}
+data("j1", package = "R4FunDrill")
+fml <- transfer ~ attend + goal + j2
+probit <- glm(fml, family = binomial(link = "probit"), data = j1)
+xbar <- as.data.frame.list(colMeans(j1))
+xbeta <- predict(probit, xbar)
+dnorm(xbeta) * coef(probit)[-1]
+```
+
+### ロジット
+
+上と同じデータを使ってロジスティック回帰分析を実行してください。 `binomial(link = "logit")` を使います。
+
+限界効果の計算には
+
+$$
+\frac{\partial}{\partial X_i} \widehat{\mathrm{Prob}(Y = 1)}
+=
+\frac{\partial}{\partial X_i}\left[
+  \frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}
+\right]
+=
+\frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}\left[
+  1 - \frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}
+\right]
+\hat\beta_i
+$$
+を使います。$\frac{\exp(X\beta)}{1 + \exp(X\beta)}$ を `fitted(model)` の形式で簡単に計算できることに注意してください。
+
+```{r j1-logit, exercise=TRUE}
+# データの読み込み
+
+
+# ロジスティック回帰
+logit <- "ここを書き換える"
+
+# 限界効果の計算
+f <- function(x) exp(x) / (1 + exp(x))
+xbeta <- predict(logit, as.data.frame.list(colMeans(j1))) 
+ME <- "ここを書き換える"
+
+```
+
+

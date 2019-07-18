@@ -1,7 +1,7 @@
 Package: R4FunDrill
 Type: Package
 Title: Drill Collection for OPU R Club
-Version: 0.10.0
+Version: 0.12.0
 Author: Kenji Sato
 Maintainer: Kenji Sato <kenji@kenjisato.jp>
 Description: OPU R Club is a reading group for R books at Osaka Prefecture University.
@@ -12,6 +12,7 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/opueco/R4FunDrill
 BugReports: https://github.com/opueco/R4FunDrill/issues
+Depends: R (>= 2.10)
 Imports: 
     learnr,wooldridge,sandwich,lmtest
 RoxygenNote: 6.1.1
