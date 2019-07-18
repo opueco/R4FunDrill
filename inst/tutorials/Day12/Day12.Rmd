@@ -36,20 +36,21 @@ summary(probit)
 
 `attend` に対する係数が -1.39344 となっています。これは何を意味しているでしょうか？
 
+$x$ を説明変数の行ベクトル，$x_j$ を第$j$番目の説明変数とします。
 プロビットの回帰モデルは
 
 $$
-\mathrm{Prob}(Y = 1) = \Phi(X\beta + e)
+\mathrm{Prob}(y = 1) = \Phi(x\beta + e)
 $$
 
-ですから（$\Phi$ は標準正規分布の累積分布関数），係数 $\beta$ の解釈には注意が必要です。$X_i$ が1だけ増加したときに $Y=1$ になる確率がどれだけ増加するかを知りたいとしましょう。$X_i$ で偏微分すると
+ですから（$\Phi$ は標準正規分布の累積分布関数），係数 $\beta$ の解釈には注意が必要です。第$j$番目の説明変数$x_j$ が1だけ増加したときに $y=1$ になる確率がどれだけ増加するかを知りたいとしましょう。上の式を$x_j$ で偏微分すると
 
 $$
-\frac{\partial}{\partial X_i} \widehat{\mathrm{Prob}(Y = 1)} = \frac{\partial}{\partial X_i} \Phi(X\hat\beta)
-= \Phi'(X\hat\beta)\hat\beta_i
+\frac{\partial}{\partial x_j} \widehat{\mathrm{Prob}(y = 1)} = \frac{\partial}{\partial x_j} \Phi(x\hat\beta)
+= \Phi'(x\hat\beta)\hat\beta_i
 $$
 
-となりますから，$X_i$ の微小な増加が確率に及ぼす影響は $\frac{\partial}{\partial X_i}$ です。これを限界効果（Marginal Effect, ME）と呼びます。
+となりますから，$x_j$ の微小な増加が確率に及ぼす影響は $\frac{\partial}{\partial x_j} \Phi(x\hat\beta)$ です。これを限界効果（Marginal Effect, ME）と呼びます。
 
 限界効果は説明変数に応じて変化するので，説明変数の「平均的な」値に対して限界効果を示すのが1つの方法です。（すべての観測について限界効果を計算して，それを平均する方法もあります）
 
@@ -87,21 +88,21 @@ dnorm(xbeta) * coef(probit)[-1]
 
 上と同じデータを使ってロジスティック回帰分析を実行してください。 `binomial(link = "logit")` を使います。
 
-限界効果の計算には
+$x$ を説明変数の行ベクトル，$x_j$ を第$j$番目の説明変数とする。限界効果の計算には
 
 $$
-\frac{\partial}{\partial X_i} \widehat{\mathrm{Prob}(Y = 1)}
+\frac{\partial}{\partial x_j} \widehat{\mathrm{Prob}(y = 1)}
 =
-\frac{\partial}{\partial X_i}\left[
-  \frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}
+\frac{\partial}{\partial x_j}\left[
+  \frac{\exp(x\hat\beta)}{1 + \exp(x\hat\beta)}
 \right]
 =
-\frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}\left[
-  1 - \frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}
+\frac{\exp(x\hat\beta)}{1 + \exp(x\hat\beta)}\left[
+  1 - \frac{\exp(x\hat\beta)}{1 + \exp(x\hat\beta)}
 \right]
 \hat\beta_i
 $$
-を使います。$\frac{\exp(X\beta)}{1 + \exp(X\beta)}$ を `fitted(model)` の形式で簡単に計算できることに注意してください。
+という関係を使います。
 
 ```{r j1-logit, exercise=TRUE}
 # データの読み込み

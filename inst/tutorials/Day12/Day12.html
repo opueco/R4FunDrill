@@ -71,16 +71,16 @@ summary(probit)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <p><code>attend</code> に対する係数が -1.39344 となっています。これは何を意味しているでしょうか？</p>
-<p>プロビットの回帰モデルは</p>
+<p><span class="math inline">\(x\)</span> を説明変数の行ベクトル，<span class="math inline">\(x_j\)</span> を第<span class="math inline">\(j\)</span>番目の説明変数とします。 プロビットの回帰モデルは</p>
 <p><span class="math display">\[
-\mathrm{Prob}(Y = 1) = \Phi(X\beta + e)
+\mathrm{Prob}(y = 1) = \Phi(x\beta + e)
 \]</span></p>
-<p>ですから（<span class="math inline">\(\Phi\)</span> は標準正規分布の累積分布関数），係数 <span class="math inline">\(\beta\)</span> の解釈には注意が必要です。<span class="math inline">\(X_i\)</span> が1だけ増加したときに <span class="math inline">\(Y=1\)</span> になる確率がどれだけ増加するかを知りたいとしましょう。<span class="math inline">\(X_i\)</span> で偏微分すると</p>
+<p>ですから（<span class="math inline">\(\Phi\)</span> は標準正規分布の累積分布関数），係数 <span class="math inline">\(\beta\)</span> の解釈には注意が必要です。第<span class="math inline">\(j\)</span>番目の説明変数<span class="math inline">\(x_j\)</span> が1だけ増加したときに <span class="math inline">\(y=1\)</span> になる確率がどれだけ増加するかを知りたいとしましょう。上の式を<span class="math inline">\(x_j\)</span> で偏微分すると</p>
 <p><span class="math display">\[
-\frac{\partial}{\partial X_i} \widehat{\mathrm{Prob}(Y = 1)} = \frac{\partial}{\partial X_i} \Phi(X\hat\beta)
-= \Phi&#39;(X\hat\beta)\hat\beta_i
+\frac{\partial}{\partial x_j} \widehat{\mathrm{Prob}(y = 1)} = \frac{\partial}{\partial x_j} \Phi(x\hat\beta)
+= \Phi&#39;(x\hat\beta)\hat\beta_i
 \]</span></p>
-<p>となりますから，<span class="math inline">\(X_i\)</span> の微小な増加が確率に及ぼす影響は <span class="math inline">\(\frac{\partial}{\partial X_i}\)</span> です。これを限界効果（Marginal Effect, ME）と呼びます。</p>
+<p>となりますから，<span class="math inline">\(x_j\)</span> の微小な増加が確率に及ぼす影響は <span class="math inline">\(\frac{\partial}{\partial x_j} \Phi(x\hat\beta)\)</span> です。これを限界効果（Marginal Effect, ME）と呼びます。</p>
 <p>限界効果は説明変数に応じて変化するので，説明変数の「平均的な」値に対して限界効果を示すのが1つの方法です。（すべての観測について限界効果を計算して，それを平均する方法もあります）</p>
 <p><span class="math display">\[
 \mathrm{ME} = \phi(\bar{X}\hat\beta) \hat \beta_i 
@@ -104,19 +104,19 @@ ME &lt;- &quot;ここを書き換えてMEの計算を完成させてください
 <div class="section level3">
 <h3>ロジット</h3>
 <p>上と同じデータを使ってロジスティック回帰分析を実行してください。 <code>binomial(link = &quot;logit&quot;)</code> を使います。</p>
-<p>限界効果の計算には</p>
+<p><span class="math inline">\(x\)</span> を説明変数の行ベクトル，<span class="math inline">\(x_j\)</span> を第<span class="math inline">\(j\)</span>番目の説明変数とする。限界効果の計算には</p>
 <p><span class="math display">\[
-\frac{\partial}{\partial X_i} \widehat{\mathrm{Prob}(Y = 1)}
+\frac{\partial}{\partial x_j} \widehat{\mathrm{Prob}(y = 1)}
 =
-\frac{\partial}{\partial X_i}\left[
-  \frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}
+\frac{\partial}{\partial x_j}\left[
+  \frac{\exp(x\hat\beta)}{1 + \exp(x\hat\beta)}
 \right]
 =
-\frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}\left[
-  1 - \frac{\exp(X\hat\beta)}{1 + \exp(X\hat\beta)}
+\frac{\exp(x\hat\beta)}{1 + \exp(x\hat\beta)}\left[
+  1 - \frac{\exp(x\hat\beta)}{1 + \exp(x\hat\beta)}
 \right]
 \hat\beta_i
-\]</span> を使います。<span class="math inline">\(\frac{\exp(X\beta)}{1 + \exp(X\beta)}\)</span> を <code>fitted(model)</code> の形式で簡単に計算できることに注意してください。</p>
+\]</span> という関係を使います。</p>
 <div class="tutorial-exercise" data-label="j1-logit" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># データの読み込み
 
